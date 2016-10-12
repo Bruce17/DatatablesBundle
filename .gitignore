@@ -1,0 +1,9 @@
+# ide folders
+.idea/
+.c9/
+
+vendor/
+
+# test files/folders
+Tests/cache/
+Tests/logs/
