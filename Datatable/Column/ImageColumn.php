@@ -11,7 +11,7 @@
 
 namespace Sg\DatatablesBundle\Datatable\Column;
 
-use Sg\DatatablesBundle\Datatable\Data\DatatableQuery;
+use Sg\DatatablesBundle\Datatable\Query\DatatableQuery;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;

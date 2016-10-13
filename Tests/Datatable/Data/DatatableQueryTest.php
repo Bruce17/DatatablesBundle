@@ -2,7 +2,7 @@
 
 namespace Sg\DatatablesBundle\Tests\Datatable\Data;
 
-use Sg\DatatablesBundle\Datatable\Data\DatatableQuery;
+use Sg\DatatablesBundle\Datatable\Query\DatatableQuery;
 use Sg\DatatablesBundle\Tests\BaseDatatablesTestCase;
 
 /**
@@ -17,9 +17,10 @@ class DatatableQueryTest extends BaseDatatablesTestCase
     protected $datatableQuery;
 
 
-    protected function setUp()
+    public function setUp()
     {
-        $serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')->getMock();
+        parent::setUp();
+
         $requestParams = array(
             'search'  => array(
                 'value' => '',
@@ -45,7 +46,6 @@ class DatatableQueryTest extends BaseDatatablesTestCase
         }
 
         $this->datatableQuery = new DatatableQuery(
-            $serializer,
             $requestParams,
             $datatable,
             $configs,
@@ -61,7 +61,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
     {
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         $this->assertInternalType('array', $dqlParts);
         $this->assertNotEmpty($dqlParts);
@@ -73,7 +73,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
         /** @var \Sg\DatatablesBundle\Datatable\View\AbstractDatatableView $datatableView */
         $datatableView = $this->getPrivateProperty($this->datatableQuery, 'datatableView');
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "FROM"
         $this->assertNotEmpty($dqlParts['from']);
@@ -89,7 +89,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
     {
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "SELECT"
         $this->assertNotEmpty($dqlParts['select']);
@@ -117,7 +117,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
 
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "WHERE"
         $this->assertNotEmpty($dqlParts['where']);
@@ -156,7 +156,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
 
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "WHERE"
         $this->assertNotEmpty($dqlParts['where']);
@@ -195,7 +195,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
 
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "WHERE"
         $this->assertNotEmpty($dqlParts['where']);
@@ -231,7 +231,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
 
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         // Check "WHERE"
         $this->assertNotEmpty($dqlParts['where']);
@@ -252,7 +252,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
     {
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         $this->assertInternalType('array', $dqlParts);
         $this->assertEmpty($dqlParts['orderBy']);
@@ -270,7 +270,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
 
         $this->datatableQuery->buildQuery();
 
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
+        $dqlParts = $this->datatableQuery->getQueryBuilder()->getDQLParts();
 
         $this->assertInternalType('array', $dqlParts);
         $this->assertNotEmpty($dqlParts['orderBy']);
@@ -282,42 +282,12 @@ class DatatableQueryTest extends BaseDatatablesTestCase
         $this->assertContains('title desc', $orderByPartTwo[0]);
     }
 
-    public function testBuildQueryCheckOrderByWithOrderableColumnsContaingNumbersInStrings()
-    {
-        $extendedRequestParams = array(
-            'order' => array(
-                array('column' => 0, 'dir' => 'asc'),
-                array('column' => 1, 'dir' => 'desc'),
-            ),
-        );
-        $this->extendPrivateArrayProperty($this->datatableQuery, 'requestParams', $extendedRequestParams);
-
-        // Set columns of type number/integer
-        $extendedColumns = $this->getPrivateProperty($this->datatableQuery, 'columns');
-        $extendedColumns[0]->setType('num');
-        $extendedColumns[1]->setType('int');
-        $this->setPrivateProperty($this->datatableQuery, 'columns', $extendedColumns);
-
-        $this->datatableQuery->buildQuery();
-
-        $dqlParts = $this->datatableQuery->getQuery()->getDQLParts();
-
-        $this->assertInternalType('array', $dqlParts);
-        $this->assertNotEmpty($dqlParts['orderBy']);
-
-        $orderByPartOne = $this->getPrivateProperty($dqlParts['orderBy'][0], 'parts');
-        $this->assertContains('id_order_as_int asc', $orderByPartOne[0]);
-
-        $orderByPartTwo = $this->getPrivateProperty($dqlParts['orderBy'][1], 'parts');
-        $this->assertContains('title_order_as_int desc', $orderByPartTwo[0]);
-    }
-
     public function testBuildQueryCheckLimitWithNoLimitGiven()
     {
         $this->datatableQuery->buildQuery();
 
         // Check "LIMIT"
-        $qb = $this->datatableQuery->getQuery();
+        $qb = $this->datatableQuery->getQueryBuilder();
 
         $this->assertNull($qb->getFirstResult());
         $this->assertNull($qb->getMaxResults());
@@ -334,7 +304,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
         $this->datatableQuery->buildQuery();
 
         // Check "LIMIT"
-        $qb = $this->datatableQuery->getQuery();
+        $qb = $this->datatableQuery->getQueryBuilder();
 
         $this->assertNull($qb->getFirstResult());
         $this->assertNull($qb->getMaxResults());
@@ -351,7 +321,7 @@ class DatatableQueryTest extends BaseDatatablesTestCase
         $this->datatableQuery->buildQuery();
 
         // Check "LIMIT"
-        $qb = $this->datatableQuery->getQuery();
+        $qb = $this->datatableQuery->getQueryBuilder();
 
         $this->assertEquals(10, $qb->getFirstResult());
         $this->assertEquals(20, $qb->getMaxResults());

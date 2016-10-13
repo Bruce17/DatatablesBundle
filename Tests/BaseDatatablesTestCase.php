@@ -2,13 +2,30 @@
 
 namespace Sg\DatatablesBundle\Tests;
 
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class BaseDatatablesTestCase
  *
  * @package Sg\DatatablesBundle\Tests
  */
-class BaseDatatablesTestCase extends \PHPUnit_Framework_TestCase
+class BaseDatatablesTestCase extends KernelTestCase
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+
+    public function setUp()
+    {
+        static::bootKernel();
+
+        $this->container = static::$kernel->getContainer();
+    }
+
+
     /**
      * @param string $tableClass
      *
@@ -196,5 +213,16 @@ class BaseDatatablesTestCase extends \PHPUnit_Framework_TestCase
         return $this
             ->getPrivateMethod($object, $methodName)
             ->invokeArgs($object, $args);
+    }
+
+    /**
+     * Render a view template.
+     *
+     * @param string $view
+     * @param array  $parameters
+     */
+    protected function renderTemplate($view, array $parameters = array())
+    {
+        return $this->container->get('twig')->render($view, $parameters);
     }
 }

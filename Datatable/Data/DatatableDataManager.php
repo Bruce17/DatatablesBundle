@@ -11,11 +11,11 @@
 
 namespace Sg\DatatablesBundle\Datatable\Data;
 
+use Sg\DatatablesBundle\Datatable\Query as DatatableQuery;
 use Sg\DatatablesBundle\Datatable\View\DatatableViewInterface;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Serializer;
 use Twig_Environment;
 
 /**
@@ -31,13 +31,6 @@ class DatatableDataManager
      * @var Request
      */
     private $request;
-
-    /**
-     * The serializer service.
-     *
-     * @var Serializer
-     */
-    private $serializer;
 
     /**
      * The Twig Environment service.
@@ -82,15 +75,13 @@ class DatatableDataManager
      * Ctor.
      *
      * @param RequestStack     $requestStack
-     * @param Serializer       $serializer
      * @param Twig_Environment $twig
      * @param array            $configs
      * @param array            $bundles
      */
-    public function __construct(RequestStack $requestStack, Serializer $serializer, Twig_Environment $twig, array $configs, array $bundles)
+    public function __construct(RequestStack $requestStack, Twig_Environment $twig, array $configs, array $bundles)
     {
         $this->request = $requestStack->getCurrentRequest();
-        $this->serializer = $serializer;
         $this->twig = $twig;
         $this->configs = $configs;
         $this->imagineBundle = false;
@@ -131,17 +122,37 @@ class DatatableDataManager
             $parameterBag = $this->request->request;
         }
 
-        $params = $parameterBag->all();
-        $query = new DatatableQuery(
-            $this->serializer,
-            $params,
-            $datatableView,
-            $this->configs,
-            $this->twig,
-            $this->imagineBundle,
-            $this->doctrineExtensions,
-            $this->locale
-        );
+        $nativeQueryMethod = $datatableView->getOptions()->getNativeQueryMethod();
+
+        if (empty($nativeQueryMethod)) {
+            $query = new DatatableQuery\DatatableQuery(
+                $parameterBag->all(),
+                $datatableView,
+                $this->configs,
+                $this->twig,
+                $this->imagineBundle,
+                $this->doctrineExtensions,
+                $this->locale
+            );
+        } else {
+            $query = new DatatableQuery\DatatableNativeQuery(
+                $parameterBag->all(),
+                $datatableView,
+                $this->configs,
+                $this->twig,
+                $this->imagineBundle,
+                $this->doctrineExtensions,
+                $this->locale
+            );
+
+            // Fetch native query from the entities repository.
+            //TODO: add check if method exists
+            $nq = $datatableView->getEntityManager()
+                ->getRepository($datatableView->getEntity())
+                ->{$nativeQueryMethod}();
+
+            $query->setNativeQuery($nq);
+        }
 
         return $query;
     }

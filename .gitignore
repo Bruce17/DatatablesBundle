@@ -2,3 +2,7 @@
 .idea/
 
 vendor/
+
+# Symfony test appliaction data
+Tests/DummySymfonyApplication/cache
+Tests/DummySymfonyApplication/logs

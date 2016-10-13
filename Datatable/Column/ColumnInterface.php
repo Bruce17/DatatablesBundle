@@ -11,7 +11,7 @@
 
 namespace Sg\DatatablesBundle\Datatable\Column;
 
-use Sg\DatatablesBundle\Datatable\Data\DatatableQuery;
+use Sg\DatatablesBundle\Datatable\Query\DatatableQueryInterface;
 
 /**
  * Interface ColumnInterface
@@ -65,12 +65,12 @@ interface ColumnInterface
     /**
      * Render images or any other special content.
      *
-     * @param array               $row
-     * @param DatatableQuery|null $datatableQuery
+     * @param array                        $row
+     * @param DatatableQueryInterface|null $datatableQuery
      *
      * @return mixed
      */
-    public function renderContent(&$row, DatatableQuery $datatableQuery = null);
+    public function renderContent(&$row, DatatableQueryInterface $datatableQuery = null);
 
     /**
      * Checks whether the column may be added.

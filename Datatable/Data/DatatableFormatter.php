@@ -11,6 +11,9 @@
 
 namespace Sg\DatatablesBundle\Datatable\Data;
 
+use Sg\DatatablesBundle\Datatable\Column\AbstractColumn;
+use Sg\DatatablesBundle\Datatable\Query\DatatableQueryInterface;
+
 /**
  * Class DatatableFormatter
  *
@@ -19,7 +22,7 @@ namespace Sg\DatatablesBundle\Datatable\Data;
 class DatatableFormatter
 {
     /**
-     * @var DatatableQuery
+     * @var DatatableQueryInterface
      */
     private $datatableQuery;
 
@@ -32,7 +35,7 @@ class DatatableFormatter
     // Ctor.
     //-------------------------------------------------
 
-    public function __construct(DatatableQuery $datatableQuery)
+    public function __construct(DatatableQueryInterface $datatableQuery)
     {
         $this->datatableQuery = $datatableQuery;
         $this->output = array('data' => array());
@@ -45,10 +48,10 @@ class DatatableFormatter
     public function runFormatter()
     {
         $columns = $this->datatableQuery->getColumns();
-        $paginator = $this->datatableQuery->getPaginator();
+        $paginatorResults = $this->datatableQuery->getPaginatorResults();
         $lineFormatter = $this->datatableQuery->getLineFormatter();
 
-        foreach ($paginator as $row) {
+        foreach ($paginatorResults as $row) {
 
             // 1. Call the the lineFormatter to format row items
             if (is_callable($lineFormatter)) {
@@ -56,6 +59,8 @@ class DatatableFormatter
             }
 
             foreach ($columns as $column) {
+                /** @var AbstractColumn $column */
+
                 // 2. Add some special data to the output array. For example, the visibility of actions.
                 $column->addDataToOutputArray($row);
                 // 3. Call columns renderContent method to format row items (e.g. for images)
