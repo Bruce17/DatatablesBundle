@@ -1,0 +1,4 @@
+services:
+#    app.datatable.empty:
+#        class: Sg\DatatablesBundle\Tests\Datatables\EmptyDatatable
+#        parent: sg_datatables.datatable.abstract

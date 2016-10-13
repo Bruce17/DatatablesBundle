@@ -7,6 +7,7 @@ use Sg\DatatablesBundle\Tests\BaseDatatablesTestCase;
 
 /**
  * Class DatatableQueryTest
+ *
  * @package Sg\DatatablesBundle\Tests\Datatable\Data
  */
 class DatatableQueryTest extends BaseDatatablesTestCase

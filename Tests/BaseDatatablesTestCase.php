@@ -1,11 +1,11 @@
 <?php
-
 namespace Sg\DatatablesBundle\Tests;
 
 /**
  * Class BaseDatatablesTestCase
  *
  * @package Sg\DatatablesBundle\Tests
+ * @extends \PHPUnit_Framework_TestCase
  */
 class BaseDatatablesTestCase extends \PHPUnit_Framework_TestCase
 {

@@ -17,7 +17,7 @@ class AppKernel extends Kernel
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Symfony\Bundle\FrameworkBundle\FrameworkBundle();
             $bundles[] = new Symfony\Bundle\TwigBundle\TwigBundle();
-            $bundles[] = new \Sg\DatatablesBundle\SgDatatablesBundle();
+            $bundles[] = new Sg\DatatablesBundle\SgDatatablesBundle();
         }
 
         return $bundles;
@@ -25,6 +25,6 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config.yml');
+        $loader->load(__DIR__ . '/config/config.yml');
     }
 }

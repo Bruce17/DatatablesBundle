@@ -5,5 +5,5 @@
 vendor/
 
 # test files/folders
-Tests/cache/
-Tests/logs/
+Tests/DummySymfonyApplication/cache/
+Tests/DummySymfonyApplication/logs/
