@@ -5,6 +5,9 @@ framework:
 
     default_locale: en
 
+    templating:
+        engines: ['twig']
+
 twig:
     form_themes:
         # Default:

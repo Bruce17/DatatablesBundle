@@ -50,5 +50,10 @@ before_install:
 
 install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 
+before_script:
+  # Clear previous temp folders
+  - rm -rf ./Tests/DummySymfonyApplication/cache
+  - rm -rf ./Tests/DummySymfonyApplication/logs
+
 script:
   - phpunit --coverage-text
