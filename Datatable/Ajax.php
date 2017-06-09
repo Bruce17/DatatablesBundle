@@ -62,6 +62,13 @@ class Ajax
      * @var int Number of pages to cache. Set to zero to disable feature.
      */
     protected $pipeline;
+    
+    /**
+     * Use ajax to access backend data or use passed data in the frontend without backend access.
+     * 
+     * @var boolean
+     */
+    protected $serverSide;
 
     //-------------------------------------------------
     // Ctor.
@@ -93,12 +100,14 @@ class Ajax
             'type' => 'GET',
             'data' => null,
             'pipeline' => 0,
+            'serverSide' => true,
         ));
 
         $resolver->setAllowedTypes('url', array('null', 'string'));
         $resolver->setAllowedTypes('type', 'string');
         $resolver->setAllowedTypes('data', array('null', 'array'));
         $resolver->setAllowedTypes('pipeline', 'int');
+        $resolver->setAllowedTypes('serverSide', 'boolean');
 
         $resolver->setAllowedValues('type', array('GET', 'POST'));
 
@@ -205,6 +214,30 @@ class Ajax
     public function setPipeline($pipeline)
     {
         $this->pipeline = $pipeline;
+
+        return $this;
+    }
+
+    /**
+     * Get serverSide.
+     *
+     * @return boolean
+     */
+    public function getServerSide()
+    {
+        return $this->serverSide;
+    }
+
+    /**
+     * Set serverSide.
+     *
+     * @param boolean $serverSide
+     *
+     * @return $this
+     */
+    public function setServerSide($serverSide)
+    {
+        $this->serverSide = $serverSide;
 
         return $this;
     }

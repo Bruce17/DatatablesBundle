@@ -16,7 +16,7 @@
     {% endif %}
 {% endset %}
 
-"serverSide": true,
+"serverSide": {{ sg_datatables_view.ajax.serverSide|default(true) ? "true" : "false" }}
 {% if sg_datatables_view.ajax.pipeline > 0 %}
     "ajax": $.fn.dataTable.pipeline({
         {{ ajax_vars }}
