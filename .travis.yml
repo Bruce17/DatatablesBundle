@@ -31,7 +31,7 @@ matrix:
     - php: 7.0
       env: SYMFONY_VERSION="3.2.*" DEPENDENCIES=dev COMPOSER_FLAGS="--prefer-stable"
     - php: 7.0
-      env: SYMFONY_VERSION="3.4.*" DEPENDENCIES=dev COMPOSER_FLAGS="--prefer-stable"
+      env: SYMFONY_VERSION="3.3.*" DEPENDENCIES=dev COMPOSER_FLAGS="--prefer-stable"
       
     - php: hhvm
   allow_failures:
